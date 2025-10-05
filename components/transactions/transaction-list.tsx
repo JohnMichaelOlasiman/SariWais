@@ -116,26 +116,27 @@ export function TransactionList({ transactions, onUpdate }: TransactionListProps
         </Table>
       </div>
 
-      {/* Dialog - View Details */}
+      {/* ✅ Transaction Details Modal */}
       {selectedTransaction && (
         <Dialog open onOpenChange={() => setSelectedTransaction(null)}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
             <DialogHeader>
-              <DialogTitle>Transaction Details</DialogTitle>
+              <DialogTitle className="text-lg font-semibold">Transaction Details</DialogTitle>
               <DialogDescription>
                 {new Date(selectedTransaction.created_at).toLocaleString()}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
+              {/* Payment + Customer Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-muted-foreground">Payment Method</p>
-                  <p className="capitalize">{selectedTransaction.payment_method || "N/A"}</p>
+                  <p className="capitalize font-medium">{selectedTransaction.payment_method || "N/A"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Customer</p>
-                  <p>
+                  <p className="font-medium">
                     {selectedTransaction.notes?.includes("Customer:")
                       ? selectedTransaction.notes.split("\n")[0].replace("Customer: ", "")
                       : "-"}
@@ -143,7 +144,7 @@ export function TransactionList({ transactions, onUpdate }: TransactionListProps
                 </div>
               </div>
 
-              {/* ✅ Show Reference Number only if payment_method is gcash and has reference_number */}
+              {/* GCash Reference */}
               {selectedTransaction.payment_method?.toLowerCase() === "gcash" &&
                 selectedTransaction.reference_number &&
                 selectedTransaction.reference_number.trim() !== "" && (
@@ -153,13 +154,38 @@ export function TransactionList({ transactions, onUpdate }: TransactionListProps
                   </div>
                 )}
 
-              {selectedTransaction.notes && selectedTransaction.notes.includes("\n") && (
-                <div>
+              {/* ✅ Notes (Vertical Scroll + Clean Layout) */}
+              {selectedTransaction.notes && (
+                <div className="flex flex-col space-y-1">
                   <p className="text-sm text-muted-foreground">Notes</p>
-                  <p className="text-sm">{selectedTransaction.notes.split("\n").slice(1).join("\n")}</p>
+                  <div
+                    className="
+                      text-sm
+                      whitespace-pre-wrap
+                      break-words
+                      overflow-y-auto
+                      overflow-x-hidden
+                      max-h-[200px]
+                      border
+                      rounded-md
+                      p-3
+                      bg-gray-50
+                      leading-relaxed
+                    "
+                    style={{
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {selectedTransaction.notes.includes("Customer:")
+                      ? selectedTransaction.notes.split("\n").slice(1).join("\n") ||
+                        "(No additional notes)"
+                      : selectedTransaction.notes}
+                  </div>
                 </div>
               )}
 
+              {/* Items Table */}
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Items</p>
                 <Table>
@@ -184,7 +210,7 @@ export function TransactionList({ transactions, onUpdate }: TransactionListProps
                       <TableCell colSpan={3} className="text-right font-bold">
                         Total:
                       </TableCell>
-                      <TableCell className="text-right font-bold">
+                      <TableCell className="text-right font-bold text-emerald-600">
                         ₱{Number(selectedTransaction.total_amount).toFixed(2)}
                       </TableCell>
                     </TableRow>
