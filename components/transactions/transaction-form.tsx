@@ -34,7 +34,8 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
   const [notes, setNotes] = useState("")
   const [loading, setLoading] = useState(false)
   const [selectedItemId, setSelectedItemId] = useState<string>("")
-  const [quantity, setQuantity] = useState(1)
+  // quantity is a string so the input can be cleared; convert to number when needed
+  const [quantity, setQuantity] = useState<string>("1")
 
   useEffect(() => {
     if (type === "sale") {
@@ -54,26 +55,46 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
     }
   }
 
+  // sanitize input: allow digits and remove leading zeros when more than one digit
+  const sanitizeQuantityInput = (raw: string) => {
+    // keep empty string to allow user to clear it
+    if (raw === "") return ""
+    // remove all non-digit characters
+    let onlyDigits = raw.replace(/\D+/g, "")
+    // remove leading zeros if there are more than 1 digit (so "012" -> "12")
+    onlyDigits = onlyDigits.replace(/^0+(?=\d)/, "")
+    return onlyDigits
+  }
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    const sanitized = sanitizeQuantityInput(raw)
+    setQuantity(sanitized)
+  }
+
   const addItem = () => {
-    if (!selectedItemId || quantity <= 0) {
-      alert("Please select an item and enter quantity")
+    // parse quantity to number only when adding
+    const qtyNum = quantity === "" ? NaN : Number.parseInt(quantity, 10)
+    if (!selectedItemId || Number.isNaN(qtyNum) || qtyNum <= 0) {
+      alert("Please select an item and enter a valid quantity (1 or more)")
       return
     }
 
     const item = inventoryItems.find((i) => i.id.toString() === selectedItemId)
     if (!item) return
 
+    const unitPrice = Number(item.selling_price) || 0
     const newItem: TransactionItem = {
       inventory_item_id: item.id,
       item_name: item.name,
-      quantity,
-      unit_price: Number(item.selling_price),
-      subtotal: quantity * Number(item.selling_price),
+      quantity: qtyNum,
+      unit_price: unitPrice,
+      subtotal: qtyNum * unitPrice,
     }
 
-    setItems([...items, newItem])
+    setItems((prev) => [...prev, newItem])
     setSelectedItemId("")
-    setQuantity(1)
+    setQuantity("1")
   }
 
   const removeItem = (index: number) => setItems(items.filter((_, i) => i !== index))
@@ -115,8 +136,8 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
         onSuccess()
         onClose()
       } else {
-        const data = await response.json()
-        alert(data.error || "An error occurred")
+        const data = await response.json().catch(() => null)
+        alert((data && data.error) || "An error occurred")
       }
     } catch (error) {
       console.error("[v0] Submit transaction error:", error)
@@ -148,10 +169,12 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                 <Input
                   id="quantity"
                   type="number"
-                  min="1"
+                  min={1}
+                  // show the string value (allows empty "")
                   value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  onChange={handleQuantityChange}
                   className="h-11"
+                  placeholder="1"
                 />
               </div>
 

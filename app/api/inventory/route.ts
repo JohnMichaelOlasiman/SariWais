@@ -1,3 +1,4 @@
+// app/api/inventory/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/session"
 import { sql } from "@/lib/db"
@@ -5,7 +6,6 @@ import { sql } from "@/lib/db"
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession()
-
     if (!session) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
     }
@@ -15,33 +15,23 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search")
     const lowStock = searchParams.get("lowStock")
 
-    let query = sql`
-      SELECT * FROM inventory_items 
-      WHERE user_id = ${session.userId}
-    `
+    // Base query
+    let query = sql`SELECT * FROM inventory_items WHERE user_id = ${session.userId}`
 
     if (category && category !== "all") {
-      query = sql`
-        SELECT * FROM inventory_items 
-        WHERE user_id = ${session.userId} AND category = ${category}
-      `
+      query = sql`${query} AND category = ${category}`
     }
 
     if (search) {
-      query = sql`
-        SELECT * FROM inventory_items 
-        WHERE user_id = ${session.userId} 
-        AND (name ILIKE ${`%${search}%`} OR barcode ILIKE ${`%${search}%`})
-      `
+      const pattern = `%${search}%`
+      query = sql`${query} AND name ILIKE ${pattern}`
     }
 
     if (lowStock === "true") {
-      query = sql`
-        SELECT * FROM inventory_items 
-        WHERE user_id = ${session.userId} AND quantity <= reorder_level
-      `
+      query = sql`${query} AND quantity <= reorder_level`
     }
 
+    query = sql`${query} ORDER BY name ASC`
     const items = await query
 
     return NextResponse.json(items, { status: 200 })
@@ -54,27 +44,36 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession()
-
     if (!session) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
     }
 
     const body = await request.json()
-    const { name, category, quantity, unit, cost_price, selling_price, reorder_level, barcode, description } = body
+    const {
+      name,
+      category,
+      quantity,
+      unit,
+      cost_price,
+      selling_price,
+      reorder_level,
+      description,
+    } = body
 
-    if (!name || !category || quantity === undefined || !unit || !cost_price || !selling_price) {
+    // validate required
+    if (!name || !category || quantity == null || !unit || cost_price == null || selling_price == null) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
     const result = await sql`
       INSERT INTO inventory_items (
-        user_id, name, category, quantity, unit, cost_price, selling_price, 
-        reorder_level, barcode, description
+        user_id, name, category, quantity, unit, cost_price, selling_price,
+        reorder_level, description, created_at, updated_at
       )
       VALUES (
-        ${session.userId}, ${name}, ${category}, ${quantity}, ${unit}, 
-        ${cost_price}, ${selling_price}, ${reorder_level || 10}, ${barcode || null}, 
-        ${description || null}
+        ${session.userId}, ${name}, ${category}, ${quantity}, ${unit},
+        ${cost_price}, ${selling_price}, ${reorder_level ?? 0},
+        ${description ?? null}, NOW(), NOW()
       )
       RETURNING *
     `
