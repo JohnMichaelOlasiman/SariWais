@@ -32,7 +32,6 @@ Stores product information and stock levels for items sold in the store.
 | id | SERIAL | PRIMARY KEY | Auto-incrementing unique identifier |
 | user_id | INTEGER | NOT NULL, FOREIGN KEY → users(id) | Owner of this inventory item |
 | name | VARCHAR(255) | NOT NULL | Product name (e.g., "Coca-Cola 1.5L") |
-| barcode | VARCHAR(100) | NULL | Product barcode/SKU (optional) |
 | category | VARCHAR(100) | NOT NULL | Product category (e.g., "Beverages", "Snacks") |
 | quantity | DECIMAL(10,2) | NOT NULL, DEFAULT 0 | Current stock quantity |
 | unit | VARCHAR(50) | NOT NULL | Unit of measure (e.g., "pcs", "kg", "L") |
@@ -45,11 +44,9 @@ Stores product information and stock levels for items sold in the store.
 **Indexes:**
 - PRIMARY KEY on `id`
 - INDEX on `user_id`
-- INDEX on `barcode`
 - INDEX on `category`
 
 **Business Rules:**
-- Barcode must be unique per user (if provided)
 - Quantity cannot be negative
 - Selling price should typically be higher than cost price
 - Low stock alert triggers when quantity ≤ reorder_level
@@ -59,13 +56,13 @@ Stores product information and stock levels for items sold in the store.
 
 ## Table: transactions
 
-Records all financial transactions including sales and expenses.
+Records all financial transactions including sales.
 
 | Column Name | Data Type | Constraints | Description |
 |-------------|-----------|-------------|-------------|
 | id | SERIAL | PRIMARY KEY | Auto-incrementing unique identifier |
 | user_id | INTEGER | NOT NULL, FOREIGN KEY → users(id) | Owner of this transaction |
-| type | VARCHAR(20) | NOT NULL, CHECK IN ('sale', 'expense') | Transaction type |
+| type | VARCHAR(20) | NOT NULL, CHECK IN ('sale') | Transaction type |
 | total_amount | DECIMAL(10,2) | NOT NULL | Total transaction amount |
 | payment_method | VARCHAR(50) | NOT NULL | Payment method (e.g., "Cash", "GCash") |
 | notes | TEXT | NULL | Optional transaction notes |
@@ -78,7 +75,7 @@ Records all financial transactions including sales and expenses.
 - INDEX on `created_at`
 
 **Business Rules:**
-- Type must be either 'sale' or 'expense'
+- Type must be sale
 - Sales increase revenue, expenses decrease profit
 - Total amount must match sum of transaction_items subtotals
 - Payment methods: "Cash", "GCash", "Credit Card", "Debit Card"

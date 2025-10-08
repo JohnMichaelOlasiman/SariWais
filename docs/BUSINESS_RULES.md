@@ -27,15 +27,12 @@
 - **BR-014:** Selling price must be greater than or equal to 0
 - **BR-015:** Initial quantity defaults to 0 if not specified
 - **BR-016:** Reorder level defaults to 0 if not specified
-- **BR-017:** Unit of measure is required (e.g., "pcs", "kg", "L")
-- **BR-018:** Barcode is optional but must be unique per user if provided
 
 ### 2.2 Stock Management
 - **BR-019:** Inventory quantity cannot be negative
 - **BR-020:** Low stock alert triggers when quantity ≤ reorder_level
 - **BR-021:** Inventory quantity is automatically decreased when a sale is recorded
 - **BR-022:** Inventory quantity is automatically restored when a sale transaction is deleted
-- **BR-023:** Expense transactions do not affect inventory quantities
 - **BR-024:** Inventory updates are atomic (all-or-nothing) within a transaction
 
 ### 2.3 Item Updates
@@ -57,17 +54,9 @@
 - **BR-034:** Sales transactions decrease inventory quantities
 - **BR-035:** If inventory quantity is insufficient, the sale should still proceed (allows negative stock)
 
-### 3.2 Expense Transactions
-- **BR-036:** Expense transactions must have type = 'expense'
-- **BR-037:** Expense transactions can have custom items (not linked to inventory)
-- **BR-038:** Expense transactions do not affect inventory quantities
-- **BR-039:** Expenses reduce net profit in reports
-- **BR-040:** Expense notes are optional but recommended for record-keeping
-
 ### 3.3 Transaction Deletion
 - **BR-041:** Users can only delete their own transactions
 - **BR-042:** Deleting a sale transaction restores inventory quantities
-- **BR-043:** Deleting an expense transaction does not affect inventory
 - **BR-044:** All transaction items are deleted when parent transaction is deleted (CASCADE)
 - **BR-045:** Deletion is permanent and cannot be undone
 
@@ -79,7 +68,6 @@
 - **BR-046:** Reports calculate data only for the authenticated user
 - **BR-047:** Date range is inclusive (includes both start and end dates)
 - **BR-048:** Total Sales = Sum of all sale transactions in date range
-- **BR-049:** Total Expenses = Sum of all expense transactions in date range
 - **BR-050:** Gross Profit = Total Sales - COGS (Cost of Goods Sold)
 - **BR-051:** Net Profit = Gross Profit - Total Expenses
 - **BR-052:** COGS = Sum of (quantity × cost_price) for all sold items
@@ -99,7 +87,6 @@
 ### 4.4 Payment Method Analytics
 - **BR-061:** Payment method distribution shows count and total amount
 - **BR-062:** Only sale transactions are included in payment method reports
-- **BR-063:** Expense transactions are excluded from payment method analysis
 
 ---
 
@@ -116,7 +103,7 @@
 - **BR-069:** Timestamps are stored in UTC
 - **BR-070:** Email addresses are stored in lowercase
 - **BR-071:** Numeric quantities allow up to 2 decimal places
-- **BR-072:** Transaction type must be either 'sale' or 'expense' (CHECK constraint)
+- **BR-072:** Each transaction is automatically categorized as a Sale.
 
 ### 5.3 Concurrency
 - **BR-073:** Database transactions ensure atomicity for multi-step operations
