@@ -109,7 +109,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md animate-fade-in">{error}</div>
           )}
         </CardContent>
-        <CardFooter className="flex flex-col space-y-4">
+        <CardFooter className="flex flex-col space-y-4 pt-6">
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
           </Button>

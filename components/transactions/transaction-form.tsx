@@ -35,7 +35,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
   const [loading, setLoading] = useState(false)
   const [selectedItemId, setSelectedItemId] = useState<string>("")
   // quantity is a string so the input can be cleared; convert to number when needed
-  const [quantity, setQuantity] = useState<string>("1")
+  const [quantity, setQuantity] = useState<string>("")
 
   useEffect(() => {
     if (type === "sale") {
@@ -150,7 +150,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
     })
 
     setSelectedItemId("")
-    setQuantity("1")
+    setQuantity("")
   }
 
   const removeItem = (index: number) => setItems(items.filter((_, i) => i !== index))
@@ -277,7 +277,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                   value={quantity}
                   onChange={handleQuantityChange}
                   className="h-11"
-                  placeholder="1"
+                  placeholder="Enter quantity"
                 />
               </div>
 
