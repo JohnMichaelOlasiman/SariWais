@@ -12,6 +12,7 @@ import type { User, SalesReport } from "@/lib/types"
 import { ReportSummary } from "@/components/reports/report-summary"
 import { CategoryChart } from "@/components/reports/category-chart"
 import { PaymentChart } from "@/components/reports/payment-chart"
+import * as XLSX from "xlsx"
 
 export default function ReportsPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -93,46 +94,131 @@ export default function ReportsPage() {
   const exportReport = () => {
     if (!report) return
 
-    const csvContent = [
-      ["Sales Report"],
-      [
-        `Period: ${new Date(report.period_start).toLocaleDateString()} - ${new Date(
-          report.period_end
-        ).toLocaleDateString()}`,
-      ],
-      [],
-      ["Metric", "Amount"],
-      ["Total Sales", `₱${report.total_sales.toFixed(2)}`],
-      ["Gross Profit", `₱${report.gross_profit.toFixed(2)}`],
-      ["Net Profit", `₱${report.net_profit.toFixed(2)}`],
-      ["Total Transactions", report.total_transactions.toString()],
-      [],
-      ["Top Selling Items"],
-      ["Item", "Quantity Sold", "Revenue"],
-      ...topSelling.map((item) => [item.name, item.total_quantity, `₱${Number(item.total_revenue).toFixed(2)}`]),
-      [],
-      ["Category Sales"],
-      ["Category", "Quantity", "Revenue"],
-      ...categoryData.map((item) => [item.category, item.total_quantity, `₱${Number(item.total_revenue).toFixed(2)}`]),
-      [],
-      ["Payment Methods"],
-      ["Method", "Transactions", "Amount"],
-      ...paymentData.map((item) => [
-        item.payment_method,
-        item.transaction_count,
-        `₱${Number(item.total_amount).toFixed(2)}`,
-      ]),
+    // Create a new workbook
+    const wb = XLSX.utils.book_new()
+    
+    // Currency format for peso
+    const currencyFormat = '₱#,##0.00'
+    
+    // Build single sheet with all sections
+    let currentRow = 0
+    const sheetData: any[][] = []
+    
+    // === HEADER SECTION ===
+    sheetData.push(['SALES REPORT'])
+    sheetData.push([])
+    sheetData.push(['Report Period:', `${new Date(report.period_start).toLocaleDateString()} - ${new Date(report.period_end).toLocaleDateString()}`])
+    sheetData.push(['Generated On:', new Date().toLocaleString()])
+    sheetData.push([])
+    sheetData.push([])
+    
+    // === SUMMARY SECTION ===
+    const summaryStartRow = sheetData.length
+    sheetData.push(['SUMMARY'])
+    sheetData.push([])
+    sheetData.push(['Metric', 'Amount'])
+    sheetData.push(['Total Sales', report.total_sales])
+    sheetData.push(['Gross Profit', report.gross_profit])
+    sheetData.push(['Net Profit', report.net_profit])
+    sheetData.push(['Total Transactions', report.total_transactions])
+    sheetData.push([])
+    sheetData.push([])
+    
+    // === TOP SELLING ITEMS SECTION ===
+    const topSellingStartRow = sheetData.length
+    sheetData.push(['TOP SELLING ITEMS'])
+    sheetData.push([])
+    sheetData.push(['Item Name', 'Quantity Sold', 'Revenue'])
+    const topSellingDataStartRow = sheetData.length
+    topSelling.forEach((item) => {
+      sheetData.push([
+        item.name,
+        Number(item.total_quantity),
+        Number(item.total_revenue)
+      ])
+    })
+    if (topSelling.length === 0) {
+      sheetData.push(['No data available', '', ''])
+    }
+    sheetData.push([])
+    sheetData.push([])
+    
+    // === CATEGORY SALES SECTION ===
+    const categoryStartRow = sheetData.length
+    sheetData.push(['SALES BY CATEGORY'])
+    sheetData.push([])
+    sheetData.push(['Category', 'Quantity', 'Revenue'])
+    const categoryDataStartRow = sheetData.length
+    categoryData.forEach((item) => {
+      sheetData.push([
+        item.category,
+        Number(item.total_quantity),
+        Number(item.total_revenue)
+      ])
+    })
+    if (categoryData.length === 0) {
+      sheetData.push(['No data available', '', ''])
+    }
+    sheetData.push([])
+    sheetData.push([])
+    
+    // === PAYMENT METHODS SECTION ===
+    const paymentStartRow = sheetData.length
+    sheetData.push(['PAYMENT METHODS'])
+    sheetData.push([])
+    sheetData.push(['Payment Method', 'Transactions', 'Amount'])
+    const paymentDataStartRow = sheetData.length
+    paymentData.forEach((item) => {
+      sheetData.push([
+        (item.payment_method || 'N/A').toUpperCase(),
+        Number(item.transaction_count),
+        Number(item.total_amount)
+      ])
+    })
+    if (paymentData.length === 0) {
+      sheetData.push(['No data available', '', ''])
+    }
+    
+    // Create worksheet from data
+    const ws = XLSX.utils.aoa_to_sheet(sheetData)
+    
+    // Set column widths for proper alignment
+    ws['!cols'] = [
+      { wch: 30 }, // Column A - Labels/Names
+      { wch: 18 }, // Column B - Quantities/Amounts
+      { wch: 18 }, // Column C - Revenue/Amount
     ]
-      .map((row) => row.join(","))
-      .join("\n")
+    
+    // Apply currency formatting to Summary section (Amount column)
+    const summaryAmountRows = [summaryStartRow + 3, summaryStartRow + 4, summaryStartRow + 5] // Total Sales, Gross Profit, Net Profit
+    summaryAmountRows.forEach(row => {
+      const cellRef = `B${row + 1}`
+      if (ws[cellRef]) ws[cellRef].z = currencyFormat
+    })
+    
+    // Apply currency formatting to Top Selling Items (Revenue column C)
+    topSelling.forEach((_, index) => {
+      const cellRef = `C${topSellingDataStartRow + index + 1}`
+      if (ws[cellRef]) ws[cellRef].z = currencyFormat
+    })
+    
+    // Apply currency formatting to Category Sales (Revenue column C)
+    categoryData.forEach((_, index) => {
+      const cellRef = `C${categoryDataStartRow + index + 1}`
+      if (ws[cellRef]) ws[cellRef].z = currencyFormat
+    })
+    
+    // Apply currency formatting to Payment Methods (Amount column C)
+    paymentData.forEach((_, index) => {
+      const cellRef = `C${paymentDataStartRow + index + 1}`
+      if (ws[cellRef]) ws[cellRef].z = currencyFormat
+    })
+    
+    // Add the sheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Sales Report')
 
-    const blob = new Blob([csvContent], { type: "text/csv" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `sales-report-${startDate}-to-${endDate}.csv`
-    a.click()
-    URL.revokeObjectURL(url)
+    // Generate and download the file
+    XLSX.writeFile(wb, `sales-report-${startDate}-to-${endDate}.xlsx`)
   }
 
   if (!user) return null
@@ -197,7 +283,7 @@ export default function ReportsPage() {
                       className="h-11 border-emerald-600 text-emerald-700 hover:bg-emerald-50"
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Export CSV
+                      Export Excel
                     </Button>
                   )}
                 </div>
