@@ -135,27 +135,27 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl">
+          <DialogTitle className="text-lg sm:text-xl">
             {item ? "Edit Inventory Item" : "Add New Inventory Item"}
           </DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogDescription className="text-xs sm:text-sm">
             {item
               ? "Update the details of the selected product."
               : "Enter the details of the new product to add to your inventory."}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
+          <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
             {error && (
-              <div className="rounded-md bg-red-50 text-red-700 text-sm px-3 py-2 border border-red-200">
+              <div className="rounded-md bg-red-50 text-red-700 text-xs sm:text-sm px-3 py-2 border border-red-200">
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="name" className="text-xs sm:text-sm font-medium">
                 Name
               </Label>
               <Input
@@ -164,12 +164,12 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="quantity" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="quantity" className="text-xs sm:text-sm font-medium">
                 Stock
               </Label>
               <Input
@@ -184,12 +184,12 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                   })
                 }
                 required
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="cost_price" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="cost_price" className="text-xs sm:text-sm font-medium">
                 Purchase Price
               </Label>
               <Input
@@ -205,12 +205,12 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                   })
                 }
                 required
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="selling_price" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="selling_price" className="text-xs sm:text-sm font-medium">
                 Selling Price
               </Label>
               <Input
@@ -226,12 +226,12 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                   })
                 }
                 required
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="reorder_level" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="reorder_level" className="text-xs sm:text-sm font-medium">
                 Low Stock Threshold
               </Label>
               <Input
@@ -245,13 +245,13 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                     reorder_level: e.target.value !== "" ? Number(e.target.value) : undefined,
                   })
                 }
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
             </div>
 
             {/* Category (custom validation) */}
-            <div className="space-y-2">
-              <Label htmlFor="category" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="category" className="text-xs sm:text-sm font-medium">
                 Category
               </Label>
               {showCustomCategory ? (
@@ -260,7 +260,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                     placeholder="Enter custom category"
                     value={customCategory}
                     onChange={(e) => setCustomCategory(e.target.value)}
-                    className="h-11"
+                    className="h-10 sm:h-11 text-sm"
                   />
                   <Button
                     type="button"
@@ -269,7 +269,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                       setShowCustomCategory(false);
                       setCustomCategory("");
                     }}
-                    className="h-11 bg-transparent"
+                    className="h-10 sm:h-11 bg-transparent text-xs sm:text-sm"
                   >
                     Cancel
                   </Button>
@@ -280,7 +280,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                     value={formData.category}
                     onValueChange={(value) => setFormData({ ...formData, category: value })}
                   >
-                    <SelectTrigger className="h-11">
+                    <SelectTrigger className="h-10 sm:h-11 text-sm">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -296,25 +296,25 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                     size="icon"
                     variant="outline"
                     onClick={() => setShowCustomCategory(true)}
-                    className="h-11 w-11 shrink-0 bg-transparent"
+                    className="h-10 sm:h-11 w-10 sm:w-11 shrink-0 bg-transparent"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
               )}
               {/* helper text to make requirement clear */}
-              <p className="text-xs text-muted-foreground">Category is required.</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Category is required.</p>
             </div>
           </div>
 
-          <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="h-11 bg-transparent">
+          <DialogFooter className="gap-2 flex-col sm:flex-row">
+            <Button type="button" variant="outline" onClick={onClose} className="h-10 sm:h-11 bg-transparent text-sm w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading || !isValid}
-              className="h-11 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60"
+              className="h-10 sm:h-11 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-sm w-full sm:w-auto"
             >
               {loading ? "Saving..." : item ? "Save Changes" : "Add Item"}
             </Button>

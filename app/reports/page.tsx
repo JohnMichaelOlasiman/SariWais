@@ -227,14 +227,14 @@ export default function ReportsPage() {
     <SidebarProvider>
       <AppSidebar user={user} />
       <main className="flex-1 overflow-auto bg-gray-50">
-        <div className="container mx-auto p-6 lg:p-8 space-y-8">
+        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <SidebarTrigger />
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">Sales Reports</h1>
-                <p className="text-gray-600 text-sm lg:text-base mt-1">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">Sales Reports</h1>
+                <p className="text-gray-600 text-xs sm:text-sm lg:text-base mt-1">
                   Analyze your sales performance and view your top-selling items.
                 </p>
               </div>
@@ -243,36 +243,38 @@ export default function ReportsPage() {
 
           {/* Date Filter */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Generate Report</CardTitle>
-              <CardDescription className="text-sm text-gray-600">
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-xl">Generate Report</CardTitle>
+              <CardDescription className="text-xs sm:text-sm text-gray-600">
                 Select a date range to view detailed sales analytics.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex flex-col lg:flex-row gap-4">
-                <div className="flex-1 space-y-2">
-                  <Label htmlFor="startDate">Start Date</Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="h-11"
-                  />
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+              <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="startDate" className="text-sm">Start Date</Label>
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="h-10 sm:h-11"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="endDate" className="text-sm">End Date</Label>
+                    <Input
+                      id="endDate"
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="h-10 sm:h-11"
+                    />
+                  </div>
                 </div>
-                <div className="flex-1 space-y-2">
-                  <Label htmlFor="endDate">End Date</Label>
-                  <Input
-                    id="endDate"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="h-11"
-                  />
-                </div>
-                <div className="flex items-end gap-2 flex-wrap">
-                  <Button onClick={generateReport} disabled={loading} className="h-11 bg-emerald-600 hover:bg-emerald-700">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <Button onClick={generateReport} disabled={loading} className="h-10 sm:h-11 bg-emerald-600 hover:bg-emerald-700 w-full sm:w-auto">
                     <Calendar className="w-4 h-4 mr-2" />
                     {loading ? "Generating..." : "Generate"}
                   </Button>
@@ -280,7 +282,7 @@ export default function ReportsPage() {
                     <Button
                       variant="outline"
                       onClick={exportReport}
-                      className="h-11 border-emerald-600 text-emerald-700 hover:bg-emerald-50"
+                      className="h-10 sm:h-11 border-emerald-600 text-emerald-700 hover:bg-emerald-50 w-full sm:w-auto"
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Export Excel
@@ -299,26 +301,26 @@ export default function ReportsPage() {
               {/* Top Selling Items */}
               {topSelling.length > 0 && (
                 <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold text-gray-900">Top Selling Items</CardTitle>
-                    <CardDescription>Most sold products for the selected date range.</CardDescription>
+                  <CardHeader className="p-4 sm:p-6">
+                    <CardTitle className="text-base sm:text-lg font-semibold text-gray-900">Top Selling Items</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">Most sold products for the selected date range.</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
                     <div className="overflow-x-auto">
-                      <table className="min-w-full text-sm text-left border border-gray-200">
+                      <table className="min-w-full text-xs sm:text-sm text-left border border-gray-200">
                         <thead className="bg-gray-100 text-gray-700">
                           <tr>
-                            <th className="px-4 py-2 border-b">Product</th>
-                            <th className="px-4 py-2 border-b">Quantity Sold</th>
-                            <th className="px-4 py-2 border-b">Revenue</th>
+                            <th className="px-3 sm:px-4 py-2 border-b whitespace-nowrap">Product</th>
+                            <th className="px-3 sm:px-4 py-2 border-b whitespace-nowrap">Quantity Sold</th>
+                            <th className="px-3 sm:px-4 py-2 border-b whitespace-nowrap">Revenue</th>
                           </tr>
                         </thead>
                         <tbody>
                           {topSelling.map((item, idx) => (
                             <tr key={idx} className="border-b hover:bg-gray-50">
-                              <td className="px-4 py-2">{item.name}</td>
-                              <td className="px-4 py-2">{item.total_quantity}</td>
-                              <td className="px-4 py-2 text-emerald-600 font-medium">
+                              <td className="px-3 sm:px-4 py-2 max-w-[150px] truncate">{item.name}</td>
+                              <td className="px-3 sm:px-4 py-2 whitespace-nowrap">{item.total_quantity}</td>
+                              <td className="px-3 sm:px-4 py-2 text-emerald-600 font-medium whitespace-nowrap">
                                 ₱{Number(item.total_revenue).toFixed(2)}
                               </td>
                             </tr>
@@ -330,7 +332,7 @@ export default function ReportsPage() {
                 </Card>
               )}
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 <CategoryChart data={categoryData} />
                 <PaymentChart data={paymentData} />
               </div>

@@ -93,18 +93,18 @@ export default function InventoryPage() {
       <AppSidebar user={user} />
 
       <main className="flex-1 overflow-auto bg-gray-50">
-        <div className="container mx-auto p-6 lg:p-8 space-y-6">
+        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <SidebarTrigger />
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900">Inventory Management</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">Inventory Management</h1>
               </div>
             </div>
             <Button
               onClick={() => setShowAddDialog(true)}
-              className="bg-emerald-600 hover:bg-emerald-700 h-11"
+              className="bg-emerald-600 hover:bg-emerald-700 h-10 sm:h-11 w-full sm:w-auto"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add New Item
@@ -112,43 +112,43 @@ export default function InventoryPage() {
           </div>
 
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="bg-white border-b border-gray-200 h-auto p-0 rounded-none w-full justify-start">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+            <TabsList className="bg-white border-b border-gray-200 h-auto p-0 rounded-none w-full justify-start overflow-x-auto">
               <TabsTrigger
                 value="all"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-600 rounded-none px-6 py-3"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-600 rounded-none px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base whitespace-nowrap"
               >
                 All Items
               </TabsTrigger>
               <TabsTrigger
                 value="lowStock"
-                className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-600 rounded-none px-6 py-3"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-emerald-600 rounded-none px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base whitespace-nowrap"
               >
                 Low Stock
               </TabsTrigger>
             </TabsList>
 
             {/* All Items Tab */}
-            <TabsContent value="all" className="space-y-6 mt-6">
-              <div className="bg-white rounded-lg p-6 space-y-4">
+            <TabsContent value="all" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+              <div className="bg-white rounded-lg p-4 sm:p-6 space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Inventory Items</h2>
-                  <p className="text-sm text-gray-600">Manage your store's inventory</p>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Inventory Items</h2>
+                  <p className="text-xs sm:text-sm text-gray-600">Manage your store's inventory</p>
                 </div>
 
                 {/* Search & Filter */}
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="relative flex-1">
+                <div className="flex flex-col gap-3 sm:gap-4">
+                  <div className="relative w-full">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
                       placeholder="Search by name..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="pl-10 h-11"
+                      className="pl-10 h-10 sm:h-11 w-full"
                     />
                   </div>
                   <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="w-full md:w-[220px] h-11">
+                    <SelectTrigger className="w-full sm:w-[220px] h-10 sm:h-11">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -174,11 +174,11 @@ export default function InventoryPage() {
             </TabsContent>
 
             {/* Low Stock Tab */}
-            <TabsContent value="lowStock" className="space-y-6 mt-6">
-              <div className="bg-white rounded-lg p-6 space-y-4">
+            <TabsContent value="lowStock" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+              <div className="bg-white rounded-lg p-4 sm:p-6 space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Low Stock Items</h2>
-                  <p className="text-sm text-gray-600">Items that need to be restocked</p>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Low Stock Items</h2>
+                  <p className="text-xs sm:text-sm text-gray-600">Items that need to be restocked</p>
                 </div>
 
                 {loading ? (

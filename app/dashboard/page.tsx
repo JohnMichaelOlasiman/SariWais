@@ -28,18 +28,18 @@ export default async function DashboardPage() {
     <SidebarProvider>
       <AppSidebar user={user} />
       <main className="flex-1 overflow-auto">
-        <div className="container mx-auto p-6 lg:p-8 space-y-8">
+        <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <SidebarTrigger />
               <div>
-                <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-base lg:text-lg text-muted-foreground mt-2">Welcome back, {user.username}!</p>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight">Dashboard</h1>
+                <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mt-1 sm:mt-2">Welcome back, {user.username}!</p>
               </div>
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <StatsCard
               title="Total Sales"
               value={`₱${stats.totalSales.toFixed(2)}`}
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
             />
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
             <SalesChart data={stats.dailySales} />
             <StatsCard
               title="Inventory Value"

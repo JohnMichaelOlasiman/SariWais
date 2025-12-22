@@ -16,11 +16,11 @@ export function SalesChart({ data }: SalesChartProps) {
 
   return (
     <Card className="animate-fade-in">
-      <CardHeader>
-        <CardTitle>Sales Overview</CardTitle>
-        <CardDescription>Daily sales for the last 30 days</CardDescription>
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="text-base sm:text-lg">Sales Overview</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Daily sales for the last 30 days</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
         <ChartContainer
           config={{
             sales: {
@@ -28,7 +28,7 @@ export function SalesChart({ data }: SalesChartProps) {
               color: "hsl(var(--chart-1))",
             },
           }}
-          className="h-[300px]"
+          className="h-[200px] sm:h-[250px] lg:h-[300px] w-full"
         >
           <AreaChart data={chartData}>
             <defs>
@@ -38,8 +38,8 @@ export function SalesChart({ data }: SalesChartProps) {
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-            <XAxis dataKey="date" className="text-xs" />
-            <YAxis className="text-xs" />
+            <XAxis dataKey="date" className="text-[10px] sm:text-xs" tick={{ fontSize: 10 }} />
+            <YAxis className="text-[10px] sm:text-xs" tick={{ fontSize: 10 }} />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Area type="monotone" dataKey="sales" stroke="hsl(var(--chart-1))" fill="url(#fillSales)" strokeWidth={2} />
           </AreaChart>

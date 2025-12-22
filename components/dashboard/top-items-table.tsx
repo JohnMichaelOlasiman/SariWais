@@ -14,37 +14,39 @@ interface TopItemsTableProps {
 export function TopItemsTable({ items }: TopItemsTableProps) {
   return (
     <Card className="animate-fade-in">
-      <CardHeader>
-        <CardTitle>Top Selling Items</CardTitle>
-        <CardDescription>Best performing products in the last 30 days</CardDescription>
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="text-base sm:text-lg">Top Selling Items</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Best performing products in the last 30 days</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Item</TableHead>
-              <TableHead className="text-right">Quantity Sold</TableHead>
-              <TableHead className="text-right">Revenue</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.length === 0 ? (
+      <CardContent className="p-4 sm:p-6 pt-0">
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <Table className="min-w-[400px]">
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">
-                  No sales data available
-                </TableCell>
+                <TableHead className="text-xs sm:text-sm">Item</TableHead>
+                <TableHead className="text-right text-xs sm:text-sm">Qty Sold</TableHead>
+                <TableHead className="text-right text-xs sm:text-sm">Revenue</TableHead>
               </TableRow>
-            ) : (
-              items.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{item.name}</TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right">₱{item.revenue.toFixed(2)}</TableCell>
+            </TableHeader>
+            <TableBody>
+              {items.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center text-muted-foreground text-xs sm:text-sm">
+                    No sales data available
+                  </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                items.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium text-xs sm:text-sm">{item.name}</TableCell>
+                    <TableCell className="text-right text-xs sm:text-sm">{item.quantity}</TableCell>
+                    <TableCell className="text-right text-xs sm:text-sm">₱{item.revenue.toFixed(2)}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   )

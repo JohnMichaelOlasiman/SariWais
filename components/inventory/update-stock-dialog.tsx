@@ -63,17 +63,17 @@ export function UpdateStockDialog({ itemId, itemName, currentStock, onClose, onS
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-[95vw] sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl">Update Stock</DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogTitle className="text-lg sm:text-xl">Update Stock</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Update the stock quantity for {itemName}. Use positive values to add stock, negative values to remove.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="quantity" className="text-sm font-medium">
+          <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="quantity" className="text-xs sm:text-sm font-medium">
                 Quantity
               </Label>
               <Input
@@ -83,16 +83,16 @@ export function UpdateStockDialog({ itemId, itemName, currentStock, onClose, onS
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 required
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
-              <p className="text-xs text-muted-foreground">Current stock: {currentStock}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Current stock: {currentStock}</p>
             </div>
           </div>
-          <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={onClose} className="h-11 bg-transparent">
+          <DialogFooter className="gap-2 flex-col sm:flex-row">
+            <Button type="button" variant="outline" onClick={onClose} className="h-10 sm:h-11 bg-transparent text-sm w-full sm:w-auto">
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="h-11 bg-emerald-600 hover:bg-emerald-700">
+            <Button type="submit" disabled={loading} className="h-10 sm:h-11 bg-emerald-600 hover:bg-emerald-700 text-sm w-full sm:w-auto">
               {loading ? "Updating..." : "Update"}
             </Button>
           </DialogFooter>

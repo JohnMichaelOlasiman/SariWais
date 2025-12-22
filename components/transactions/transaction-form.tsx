@@ -252,21 +252,21 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-xl">Create New Transaction</DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogTitle className="text-lg sm:text-xl">Create New Transaction</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Add items to the transaction and complete the sale.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Quantity → Product → Customer */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3">
               {/* Quantity */}
-              <div className="space-y-2">
-                <Label htmlFor="quantity" className="text-sm font-medium">
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="quantity" className="text-xs sm:text-sm font-medium">
                   Quantity
                 </Label>
                 <Input
@@ -276,20 +276,20 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                   // show the string value (allows empty "")
                   value={quantity}
                   onChange={handleQuantityChange}
-                  className="h-11"
+                  className="h-10 sm:h-11 text-sm"
                   placeholder="Enter quantity"
                 />
               </div>
 
               {/* Product (wide field) */}
-              <div className="md:col-span-2 space-y-2">
-                <Label htmlFor="product" className="text-sm font-medium">
+              <div className="md:col-span-2 space-y-1 sm:space-y-2">
+                <Label htmlFor="product" className="text-xs sm:text-sm font-medium">
                   Product
                 </Label>
                 <Select value={selectedItemId} onValueChange={setSelectedItemId}>
                   <SelectTrigger
                     id="product"
-                    className="h-11 w-full text-sm leading-tight whitespace-normal break-words"
+                    className="h-10 sm:h-11 w-full text-xs sm:text-sm leading-tight whitespace-normal break-words"
                   >
                     <SelectValue placeholder="Select product" />
                   </SelectTrigger>
@@ -304,7 +304,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                           key={item.id}
                           value={item.id.toString()}
                           disabled={isOutOfStock}
-                          className="whitespace-normal break-words text-sm leading-tight"
+                          className="whitespace-normal break-words text-xs sm:text-sm leading-tight"
                         >
                           {item.name} — ₱{Number(item.selling_price).toFixed(2)} (
                           {displayQty} available{isOutOfStock ? " - Out of stock" : ""})
@@ -317,8 +317,8 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
             </div>
 
             {/* Customer Name below */}
-            <div className="space-y-2">
-              <Label htmlFor="customerName" className="text-sm font-medium">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="customerName" className="text-xs sm:text-sm font-medium">
                 Customer Name
               </Label>
               <Input
@@ -326,7 +326,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                 placeholder="Optional"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="h-11"
+                className="h-10 sm:h-11 text-sm"
               />
             </div>
 
@@ -334,7 +334,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
               <Button
                 type="button"
                 onClick={addItem}
-                className="h-11 bg-emerald-600 hover:bg-emerald-700"
+                className="h-10 sm:h-11 bg-emerald-600 hover:bg-emerald-700 text-sm"
               >
                 Add Item
               </Button>
@@ -343,22 +343,22 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
 
           {/* Added Items */}
           {items.length > 0 && (
-            <div className="space-y-3">
-              <Label className="text-sm font-medium">Selected Items</Label>
+            <div className="space-y-2 sm:space-y-3">
+              <Label className="text-xs sm:text-sm font-medium">Selected Items</Label>
               <div className="space-y-2">
                 {items.map((item, index) => (
                   <div
                     key={index}
-                    className="flex flex-col md:flex-row md:items-center justify-between p-3 bg-gray-50 rounded-lg gap-2"
+                    className="flex flex-col md:flex-row md:items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg gap-2"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium break-words text-sm md:text-base">{item.item_name}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="font-medium break-words text-xs sm:text-sm md:text-base">{item.item_name}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">
                         {item.quantity} x ₱{item.unit_price.toFixed(2)}
                       </p>
                     </div>
                     <div className="flex items-center justify-between md:justify-end gap-3">
-                      <p className="font-semibold text-emerald-600">₱{item.subtotal.toFixed(2)}</p>
+                      <p className="font-semibold text-emerald-600 text-sm sm:text-base">₱{item.subtotal.toFixed(2)}</p>
                       <Button
                         type="button"
                         variant="ghost"
@@ -373,9 +373,9 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                 ))}
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t">
-                <span className="text-lg font-semibold">Total:</span>
-                <span className="text-2xl font-bold text-emerald-600">
+              <div className="flex items-center justify-between pt-2 sm:pt-3 border-t">
+                <span className="text-base sm:text-lg font-semibold">Total:</span>
+                <span className="text-xl sm:text-2xl font-bold text-emerald-600">
                   ₱{calculateTotal().toFixed(2)}
                 </span>
               </div>
@@ -383,13 +383,13 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
           )}
 
           {/* Payment Method + Reference No side-by-side */}
-          <div className="flex flex-col md:flex-row md:items-end gap-3">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="paymentMethod" className="text-sm font-medium">
+          <div className="flex flex-col md:flex-row md:items-end gap-2 sm:gap-3">
+            <div className="flex-1 space-y-1 sm:space-y-2">
+              <Label htmlFor="paymentMethod" className="text-xs sm:text-sm font-medium">
                 Payment Method
               </Label>
               <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                <SelectTrigger id="paymentMethod" className="h-11">
+                <SelectTrigger id="paymentMethod" className="h-10 sm:h-11 text-sm">
                   <SelectValue placeholder="Select payment method" />
                 </SelectTrigger>
                 <SelectContent>
@@ -400,8 +400,8 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
             </div>
 
             {paymentMethod === "gcash" && (
-              <div className="flex-1 space-y-2">
-                <Label htmlFor="referenceNo" className="text-sm font-medium">
+              <div className="flex-1 space-y-1 sm:space-y-2">
+                <Label htmlFor="referenceNo" className="text-xs sm:text-sm font-medium">
                   GCash Reference No.
                 </Label>
                 <Input
@@ -412,7 +412,7 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                   placeholder="Enter GCash reference number"
                   value={referenceNo}
                   onChange={(e) => setReferenceNo(e.target.value.replace(/\D/g, ""))}
-                  className="h-11"
+                  className="h-10 sm:h-11 text-sm"
                   required
                 />
               </div>
@@ -420,8 +420,8 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
           </div>
 
           {/* Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="notes" className="text-sm font-medium">
+          <div className="space-y-1 sm:space-y-2">
+            <Label htmlFor="notes" className="text-xs sm:text-sm font-medium">
               Notes (optional)
             </Label>
             <Textarea
@@ -429,19 +429,19 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
               placeholder="Add any additional notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="min-h-[100px] resize-none"
+              className="min-h-[80px] sm:min-h-[100px] resize-none text-sm"
             />
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="h-11 bg-transparent">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
+            <Button type="button" variant="outline" onClick={onClose} className="h-10 sm:h-11 bg-transparent text-sm w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading || items.length === 0}
-              className="h-11 bg-emerald-600 hover:bg-emerald-700"
+              className="h-10 sm:h-11 bg-emerald-600 hover:bg-emerald-700 text-sm w-full sm:w-auto"
             >
               {loading ? "Processing..." : "Complete Transaction"}
             </Button>

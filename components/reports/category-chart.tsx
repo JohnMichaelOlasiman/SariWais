@@ -22,13 +22,13 @@ export function CategoryChart({ data }: CategoryChartProps) {
 
   return (
     <Card className="animate-fade-in">
-      <CardHeader>
-        <CardTitle>Sales by Category</CardTitle>
-        <CardDescription>Revenue breakdown by product category</CardDescription>
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="text-base sm:text-lg">Sales by Category</CardTitle>
+        <CardDescription className="text-xs sm:text-sm">Revenue breakdown by product category</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
         {chartData.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">No category data available</div>
+          <div className="text-center py-8 sm:py-12 text-muted-foreground text-sm">No category data available</div>
         ) : (
           <ChartContainer
             config={{
@@ -37,12 +37,12 @@ export function CategoryChart({ data }: CategoryChartProps) {
                 color: "hsl(160 84% 39%)",
               },
             }}
-            className="h-[300px]"
+            className="h-[200px] sm:h-[250px] lg:h-[300px] w-full"
           >
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="category" className="text-xs" />
-              <YAxis className="text-xs" />
+              <XAxis dataKey="category" className="text-[10px] sm:text-xs" tick={{ fontSize: 10 }} />
+              <YAxis className="text-[10px] sm:text-xs" tick={{ fontSize: 10 }} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="revenue" fill="hsl(160 84% 39%)" radius={[4, 4, 0, 0]} />
             </BarChart>
