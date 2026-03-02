@@ -3,6 +3,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/session"
 import { sql } from "@/lib/db"
 
+export const dynamic = "force-dynamic"
+
 /**
  * GET /api/inventory
  * Fetch inventory items, optionally filtered.

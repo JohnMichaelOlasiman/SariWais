@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { sql } from "@/lib/db"
 import { getSession } from "@/lib/session"
 
+export const dynamic = "force-dynamic"
+
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getSession()

@@ -3,6 +3,8 @@ import { getSession } from "@/lib/session"
 import { createUser, getUserById } from "@/lib/auth"
 import { sql } from "@/lib/db"
 
+export const dynamic = "force-dynamic"
+
 async function requireAdmin() {
   const session = await getSession()
 

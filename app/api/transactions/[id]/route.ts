@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getSession } from "@/lib/session"
 import { sql } from "@/lib/db"
 
+export const dynamic = "force-dynamic"
+
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getSession()

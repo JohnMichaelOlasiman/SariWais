@@ -3,6 +3,8 @@ import { getSession } from "@/lib/session"
 import { getUserById } from "@/lib/auth"
 import { sql } from "@/lib/db"
 
+export const dynamic = "force-dynamic"
+
 async function requireAdmin() {
   const session = await getSession()
 
@@ -44,12 +46,13 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       WHERE id = ${targetUserId}
       RETURNING id, username, store_name, role, is_active, subscription_expires_at, created_at, updated_at
     `
+    const rows = result as Record<string, any>[]
 
-    if (!result.length) {
+    if (!rows.length) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    return NextResponse.json({ user: result[0] }, { status: 200 })
+    return NextResponse.json({ user: rows[0] }, { status: 200 })
   } catch (error) {
     console.error("[admin/users/:id/status][PATCH]", error)
     return NextResponse.json({ error: "Failed to update user status" }, { status: 500 })

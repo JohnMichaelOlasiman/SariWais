@@ -1,9 +1,22 @@
 import { neon } from "@neondatabase/serverless"
 
+let client: ReturnType<typeof neon> | null = null
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is not set")
+function getClient() {
+  const databaseUrl = process.env.DATABASE_URL
+
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL environment variable is not set")
+  }
+
+  if (!client) {
+    client = neon(databaseUrl)
+  }
+
+  return client
 }
 
-
-export const sql = neon(process.env.DATABASE_URL)
+export const sql = (strings: TemplateStringsArray, ...values: any[]) => {
+  const sqlClient = getClient()
+  return sqlClient(strings, ...values)
+}
