@@ -12,7 +12,10 @@ export const dynamic = "force-dynamic"
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession().catch(() => null)
-    console.log("[DEBUG] Session (GET):", session)
+
+    if (!session) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
+    }
 
     const { searchParams } = new URL(request.url)
     const category = searchParams.get("category")
@@ -23,9 +26,7 @@ export async function GET(request: NextRequest) {
     let query = sql`SELECT * FROM inventory_items`
 
     // Apply filters dynamically
-    if (session?.userId) {
-      query = sql`${query} WHERE user_id = ${session.userId}`
-    }
+    query = sql`${query} WHERE user_id = ${session.userId}`
 
     if (category && category !== "all") {
       query = sql`${query} AND category = ${category}`
@@ -60,7 +61,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await getSession().catch(() => null)
-    console.log("[DEBUG] Session (POST):", session)
+
+    if (!session) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
+    }
 
     const body = await request.json()
 
@@ -114,7 +118,7 @@ export async function POST(request: NextRequest) {
         updated_at
       )
       VALUES (
-        ${session?.userId ?? null},
+        ${session.userId},
         ${safeName},
         ${safeCategory},
         ${Number(quantity) || 0},
