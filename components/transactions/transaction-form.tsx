@@ -67,8 +67,18 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
   }
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedItemId) {
+      return
+    }
+
     const raw = e.target.value
     const sanitized = sanitizeQuantityInput(raw)
+
+    if (sanitized === "0") {
+      setQuantity("")
+      return
+    }
+
     setQuantity(sanitized)
   }
 
@@ -264,23 +274,6 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
           {/* Quantity → Product → Customer */}
           <div className="space-y-3 sm:space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3">
-              {/* Quantity */}
-              <div className="space-y-1 sm:space-y-2">
-                <Label htmlFor="quantity" className="text-xs sm:text-sm font-medium">
-                  Quantity
-                </Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  min={1}
-                  // show the string value (allows empty "")
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  className="h-10 sm:h-11 text-sm"
-                  placeholder="Enter quantity"
-                />
-              </div>
-
               {/* Product (wide field) */}
               <div className="md:col-span-2 space-y-1 sm:space-y-2">
                 <Label htmlFor="product" className="text-xs sm:text-sm font-medium">
@@ -313,6 +306,23 @@ export function TransactionForm({ type, onSuccess, onClose }: TransactionFormPro
                     })}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Quantity */}
+              <div className="space-y-1 sm:space-y-2">
+                <Label htmlFor="quantity" className="text-xs sm:text-sm font-medium">
+                  Quantity
+                </Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  min={1}
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  className="h-10 sm:h-11 text-sm"
+                  placeholder={selectedItemId ? "Enter quantity" : "Select product first"}
+                  disabled={!selectedItemId}
+                />
               </div>
             </div>
 

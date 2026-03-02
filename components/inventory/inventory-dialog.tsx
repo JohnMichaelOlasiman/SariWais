@@ -33,6 +33,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
     name: "",
     category: "", // will be required via custom validation
     quantity: undefined as number | undefined,
+    unit: "pcs",
     cost_price: undefined as number | undefined,
     selling_price: undefined as number | undefined,
     reorder_level: undefined as number | undefined,
@@ -45,6 +46,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
         name: item.name,
         category: item.category,
         quantity: item.quantity,
+        unit: item.unit || "pcs",
         cost_price: Number(item.cost_price),
         selling_price: Number(item.selling_price),
         reorder_level: item.reorder_level,
@@ -62,6 +64,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
     return (
       formData.name.trim().length > 0 &&
       hasCategory &&
+      formData.unit.trim().length > 0 &&
       typeof formData.quantity === "number" &&
       typeof formData.cost_price === "number" &&
       typeof formData.selling_price === "number"
@@ -87,6 +90,11 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
       return;
     }
 
+    if (!formData.unit.trim()) {
+      setError("Please enter a unit.");
+      return;
+    }
+
     if (
       formData.quantity == null ||
       formData.cost_price == null ||
@@ -103,6 +111,7 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
         name: formData.name.trim(),
         category: resolvedCategory,
         quantity: Number(formData.quantity ?? 0),
+        unit: formData.unit.trim(),
         cost_price: Number(formData.cost_price ?? 0),
         selling_price: Number(formData.selling_price ?? 0),
         reorder_level: Number(formData.reorder_level ?? 0),
@@ -183,6 +192,20 @@ export function InventoryDialog({ item, onClose, onSuccess }: InventoryDialogPro
                     quantity: e.target.value !== "" ? Number(e.target.value) : undefined,
                   })
                 }
+                required
+                className="h-10 sm:h-11 text-sm"
+              />
+            </div>
+
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="unit" className="text-xs sm:text-sm font-medium">
+                Unit
+              </Label>
+              <Input
+                id="unit"
+                placeholder="e.g. pcs, pack, bottle"
+                value={formData.unit}
+                onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
                 required
                 className="h-10 sm:h-11 text-sm"
               />

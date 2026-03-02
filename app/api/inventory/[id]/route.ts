@@ -19,6 +19,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       name,
       category,
       quantity,
+      unit,
       cost_price,
       selling_price,
       reorder_level,
@@ -26,7 +27,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     } = body
 
     // validate fields
-    if (!name || !category || quantity == null || cost_price == null || selling_price == null) {
+    if (!name || !category || !unit || quantity == null || cost_price == null || selling_price == null) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
@@ -36,6 +37,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         name = ${name},
         category = ${category},
         quantity = ${Number(quantity)},
+        unit = ${String(unit).trim()},
         cost_price = ${Number(cost_price)},
         selling_price = ${Number(selling_price)},
         reorder_level = ${Number(reorder_level ?? 0)},

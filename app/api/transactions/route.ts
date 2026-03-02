@@ -207,6 +207,12 @@ export async function POST(request: NextRequest) {
     }
 
     const total_amount = items.reduce((sum: number, i: any) => sum + Number(i.subtotal || 0), 0)
+    const finalNotes = [
+      notes ? String(notes).trim() : "",
+      payment_method === "gcash" && reference_no ? `GCash Ref: ${String(reference_no).trim()}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n") || null
 
     // Use a DB transaction to keep things consistent
     await sql`BEGIN`
@@ -215,15 +221,14 @@ export async function POST(request: NextRequest) {
     try {
       const [transaction] = await sql`
         INSERT INTO transactions (
-          user_id, transaction_type, total_amount, payment_method, reference_number, notes
+          user_id, transaction_type, total_amount, payment_method, notes
         )
         VALUES (
           ${session.userId},
           ${transaction_type},
           ${total_amount},
           ${payment_method || null},
-          ${reference_no || null},
-          ${notes || null}
+          ${finalNotes}
         )
         RETURNING *
       `

@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
       name = "",
       category = "",
       quantity = 0,
+      unit = "pcs",
       cost_price = 0,
       selling_price = 0,
       reorder_level = 0,
@@ -74,9 +75,10 @@ export async function POST(request: NextRequest) {
 
     const safeName = name.trim()
     const safeCategory = category.trim().toUpperCase()
+    const safeUnit = String(unit).trim()
     const safeDescription = description?.trim() || null
 
-    if (!safeName || !safeCategory) {
+    if (!safeName || !safeCategory || !safeUnit) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -88,6 +90,7 @@ export async function POST(request: NextRequest) {
       safeName,
       safeCategory,
       quantity,
+      safeUnit,
       cost_price,
       selling_price,
       reorder_level,
@@ -100,6 +103,7 @@ export async function POST(request: NextRequest) {
         name,
         category,
         quantity,
+        unit,
         cost_price,
         selling_price,
         reorder_level,
@@ -112,6 +116,7 @@ export async function POST(request: NextRequest) {
         ${safeName},
         ${safeCategory},
         ${Number(quantity) || 0},
+        ${safeUnit},
         ${Number(cost_price) || 0},
         ${Number(selling_price) || 0},
         ${Number(reorder_level) || 0},

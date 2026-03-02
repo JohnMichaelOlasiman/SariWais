@@ -11,14 +11,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Store } from "lucide-react"
 
 interface AuthFormProps {
-  mode: "login" | "signup"
+  mode: "login"
 }
 
 export function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [storeName, setStoreName] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -28,8 +27,8 @@ export function AuthForm({ mode }: AuthFormProps) {
     setLoading(true)
 
     try {
-      const endpoint = mode === "login" ? "/api/auth/login" : "/api/auth/signup"
-      const body = mode === "login" ? { username, password } : { username, password, storeName }
+      const endpoint = "/api/auth/login"
+      const body = { username, password }
 
       const response = await fetch(endpoint, {
         method: "POST",
@@ -62,29 +61,14 @@ export function AuthForm({ mode }: AuthFormProps) {
           </div>
         </div>
         <CardTitle className="text-xl sm:text-2xl text-center">
-          {mode === "login" ? "Welcome back" : "Create your account"}
+          Welcome back
         </CardTitle>
         <CardDescription className="text-xs sm:text-sm text-center">
-          {mode === "login"
-            ? "Enter your credentials to access your store"
-            : "Start managing your Sari-Sari store today"}
+          Enter your credentials to access your store
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
-          {mode === "signup" && (
-            <div className="space-y-1 sm:space-y-2">
-              <Label htmlFor="storeName" className="text-xs sm:text-sm">Store Name</Label>
-              <Input
-                id="storeName"
-                placeholder="My Sari-Sari Store"
-                value={storeName}
-                onChange={(e) => setStoreName(e.target.value)}
-                required
-                className="h-10 sm:h-11 text-sm"
-              />
-            </div>
-          )}
           <div className="space-y-1 sm:space-y-2">
             <Label htmlFor="username" className="text-xs sm:text-sm">Username</Label>
             <Input
@@ -114,24 +98,10 @@ export function AuthForm({ mode }: AuthFormProps) {
         </CardContent>
         <CardFooter className="flex flex-col space-y-3 sm:space-y-4 pt-4 sm:pt-6 p-4 sm:p-6">
           <Button type="submit" className="w-full h-10 sm:h-11 text-sm" disabled={loading}>
-            {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Create Account"}
+            {loading ? "Please wait..." : "Sign In"}
           </Button>
           <p className="text-xs sm:text-sm text-center text-muted-foreground">
-            {mode === "login" ? (
-              <>
-                Don't have an account?{" "}
-                <a href="/signup" className="text-primary hover:underline">
-                  Sign up
-                </a>
-              </>
-            ) : (
-              <>
-                Already have an account?{" "}
-                <a href="/login" className="text-primary hover:underline">
-                  Sign in
-                </a>
-              </>
-            )}
+            Credentials are provided by your administrator.
           </p>
         </CardFooter>
       </form>

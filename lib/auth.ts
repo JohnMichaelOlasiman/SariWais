@@ -14,22 +14,35 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash)
 }
 
+function isBcryptHash(value: string): boolean {
+  return value.startsWith("$2a$") || value.startsWith("$2b$") || value.startsWith("$2y$")
+}
+
 export async function createUser(
   username: string,
   password: string,
   storeName: string,
+  options?: {
+    role?: "admin" | "user"
+    isActive?: boolean
+    subscriptionExpiresAt?: Date | null
+  },
 ): Promise<{ user?: User; error?: string }> {
   try {
     if (!username || !password || !storeName) {
       return { error: "All fields are required" }
     }
 
+    const role = options?.role ?? "user"
+    const isActive = options?.isActive ?? true
+    const subscriptionExpiresAt = options?.subscriptionExpiresAt ?? null
+
     const passwordHash = await hashPassword(password)
 
     const result = await sql`
-      INSERT INTO users (username, password_hash, store_name)
-      VALUES (${username}, ${passwordHash}, ${storeName})
-      RETURNING id, username, store_name, created_at, updated_at
+      INSERT INTO users (username, password_hash, store_name, role, is_active, subscription_expires_at)
+      VALUES (${username}, ${passwordHash}, ${storeName}, ${role}, ${isActive}, ${subscriptionExpiresAt?.toISOString() ?? null})
+      RETURNING id, username, store_name, role, is_active, subscription_expires_at, created_at, updated_at
     `
 
     if (!result || result.length === 0) {
@@ -58,7 +71,7 @@ export async function createUser(
 export async function authenticateUser(username: string, password: string): Promise<User | null> {
   try {
     const result = await sql`
-      SELECT id, username, password_hash, store_name, created_at, updated_at
+      SELECT id, username, password_hash, store_name, role, is_active, subscription_expires_at, created_at, updated_at
       FROM users
       WHERE username = ${username}
     `
@@ -68,9 +81,40 @@ export async function authenticateUser(username: string, password: string): Prom
     }
 
     const user = result[0]
-    const isValid = await verifyPassword(password, user.password_hash)
+    const storedHash = String(user.password_hash || "")
+
+    let isValid = false
+    let passwordNeedsMigration = false
+
+    if (isBcryptHash(storedHash)) {
+      isValid = await verifyPassword(password, storedHash)
+    } else {
+      isValid = password === storedHash
+      passwordNeedsMigration = isValid
+    }
 
     if (!isValid) {
+      return null
+    }
+
+    if (passwordNeedsMigration) {
+      try {
+        const migratedHash = await hashPassword(password)
+        await sql`
+          UPDATE users
+          SET password_hash = ${migratedHash}, updated_at = NOW()
+          WHERE id = ${user.id}
+        `
+      } catch (migrationError) {
+        console.error("[v0] Password hash migration failed:", migrationError)
+      }
+    }
+
+    if (!user.is_active) {
+      return null
+    }
+
+    if (user.subscription_expires_at && new Date(user.subscription_expires_at) < new Date()) {
       return null
     }
 
@@ -86,7 +130,7 @@ export async function authenticateUser(username: string, password: string): Prom
 export async function getUserById(userId: number): Promise<User | null> {
   try {
     const result = await sql`
-      SELECT id, username, store_name, created_at, updated_at
+      SELECT id, username, store_name, role, is_active, subscription_expires_at, created_at, updated_at
       FROM users
       WHERE id = ${userId}
     `

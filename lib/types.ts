@@ -2,6 +2,9 @@ export interface User {
   id: number
   username: string
   store_name: string
+  role: "admin" | "user"
+  is_active: boolean
+  subscription_expires_at: string | null
   created_at: string
   updated_at: string
 }
@@ -12,6 +15,7 @@ export interface InventoryItem {
   name: string
   category: string
   quantity: number
+  unit: string
   cost_price: number
   selling_price: number
   reorder_level: number

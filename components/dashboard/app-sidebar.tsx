@@ -16,7 +16,7 @@ import {
 import { useRouter } from "next/navigation"
 import type { User } from "@/lib/types"
 
-const menuItems = [
+const baseMenuItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Inventory", url: "/inventory", icon: Package },
   { title: "Transactions", url: "/transactions", icon: Receipt },
@@ -29,6 +29,7 @@ interface AppSidebarProps {
 
 export function AppSidebar({ user }: AppSidebarProps) {
   const router = useRouter()
+  const menuItems = user.role === "admin" ? [...baseMenuItems, { title: "Admin", url: "/admin", icon: Store }] : baseMenuItems
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" })
